@@ -83,6 +83,52 @@ hist(x)
 bins <- seq(smallest, largest)
 hist(x,breaks=bins,xlab="Height (in inches)",main="Adult men heights")
 
+# Probability Distribution
+#Unlike a fixed list of numbers, 
+#we don’t actually observe all possible outcomes of random variables, 
+#so instead of describing proportions, we describe probabilities. 
+#if we pick a random height from our list, 
+#then the probability of it falling between a and b is denoted with:
+#Pr(a≤X≤b)=F(b)−F(a)
+# capital X to describe a random var; probability dist. of a random var
+
+#if we know the null distribution, we can compute p value
+# we previously obtained 10000 outcomes of the random var under the null hypothesis 
+#(treatment groups were the same)
+n <- 100
+library(rafalib)
+nullplot(-5,5,1,30, xlab="Observed differences (grams)", ylab="Frequency")
+totals <- vector("numeric",11)
+for (i in 1:n) {
+  control <- sample(population,12)
+  treatment <- sample(population,12)
+  nulldiff <- mean(treatment) - mean(control)
+  j <- pmax(pmin(round(nulldiff)+6,11),1) #add a point to the figure every time we rerun the experiment
+  totals[j] <- totals[j]+1
+  text(j-6,totals[j],pch=15,round(nulldiff,1))
+  ##if(i < 15) Sys.sleep(1) ##You can add this line to see values appear slowly
+}
+
+#values as big as obsdiff are rare (see red line)
+hist(null, freq=TRUE)
+abline(v=obsdiff, col="red", lwd=2)
+  
+# Normal Distribution
+# if this normal approximation holds for our list, 
+# then the population mean and variance of our list can be used in the normal dist formula
+# An example of this would be when we noted above that only 1.5% of values 
+#on the null distribution were above obsdiff. 
+#We can compute the proportion of values below a value x with pnorm(x,mu,sigma) 
+# without knowing all the values. The normal approximation works very well here:
+1 - pnorm(obsdiff,mean(null),sd(null)) 
+## [1] 0.01391929
+
+## Summary
+# Statistical Inference is the mathematical theory 
+#that permits you to approximate this with only the data from your sample, 
+#i.e. the original 24 mice. We will focus on this in the following sections.
+
+
 
 
 
